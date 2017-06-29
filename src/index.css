@@ -1,0 +1,229 @@
+
+.transparent{
+  background-color: rgba(0,0,0,0.15);
+}
+
+.content {
+padding-right: 40px;
+}
+.content.indent {
+  height: 100%;
+  padding-left: 260px;
+}
+
+.chart {
+  padding: 0px;
+  padding-top: 10px;
+
+}
+.chart svg {
+  width: 100%;
+  max-height: 600px;
+  padding-left: 20px;
+  padding-right: 0px;
+
+}
+
+
+.chart tspan {
+
+}
+
+.overview {
+  background-color: #fff;
+
+}
+
+.export {
+  text-align: center;
+}
+
+
+.loader {
+  width:  100%;
+  height: 600px;
+  text-align: center;
+}
+.terms {
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 260px;
+}
+.loader > div {
+  margin-top: 300px;
+}
+
+
+
+.views span {
+  font-size: 12px !important;
+  font-weight: normal;
+  min-height: 32px !important;
+  line-height: 32px !important;
+  text-transform: uppercase;
+  color: #f1f1f1 !important;
+}
+svg.icon {
+  margin: 4px 10px 0 24px !important;
+}
+.comparison > div, .overview > div {
+      margin-left: -20px;
+    margin-right: -15px;
+  height: 100%;
+}
+.charts {
+    margin: auto;
+  padding: 5px;
+  background-color: #242632;
+  height:100%;
+
+  /*dev color*/
+/*  background-color: #457c4a;*/
+}
+.chart {
+
+  position: relative;
+  float: left;
+}
+.comparison .totals {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 18px;
+  height: 90px;
+  background-color: #20232d;
+  color: #fff !important;
+}
+
+.menu-item {
+  font-size: 12px !important;
+}
+div.select-field {
+  width: 150px !important;
+  font-size: 13px !important;
+}
+
+div.select-field div {
+    text-transform: uppercase;
+}
+
+.subheader {
+  font-size: 12px !important;
+color: rgba(255, 255, 255, 0.3) !important;
+text-transform: uppercase;
+}
+
+path:hover {
+  cursor: pointer;
+}
+
+
+table thead {
+  border: none !important;
+
+}
+
+table thead tr th {
+   font-weight: bold !important;
+   color: #333 !important;
+}
+
+
+table thead tr th:hover {
+  cursor: pointer;
+}
+
+table thead tr {
+  border-bottom: 0px !important;
+}
+.toolbar {
+   background-color: #242632 !important;
+}
+.chart tspan {
+
+  fill:rgba(255, 255, 255, 0.8)!important;
+}
+.chart .axis tspan  {
+
+  fill:rgba(255, 255, 255, 0.6)!important;
+}
+
+.sidebar button {
+  background-color: rgba(255, 255, 255, 0.1)!important;
+}
+
+.sidebar button span {
+    font-size: 12px !important;
+}
+
+.sidebar .sidebar-header {
+  height: 56px;
+}
+.sidebar{
+  background-color: #1c1f28 !important;
+
+  font-size: 12px !important;
+}
+
+.sidebar input {
+  font-size: 13px !important;
+}
+
+.sidebar path {
+  fill: #666;
+}
+
+.chart.comparison {
+  min-width: 800px;
+  padding-left: 0;
+  padding-top: 0;
+}
+.sidebar .terms span {
+  line-height: 30px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+font-size: 13px !important;
+line-height: 32px !important;
+}
+
+.sidebar .terms svg {
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.overview text tspan {
+
+  fill:#242632 !important;
+
+}
+
+.overview {
+  padding-left: 20px;
+  background-color: #f1f1f1;
+}
+.overview .chart {
+   padding: 10px;
+  background-color: #fff !important;
+  margin: 10px;
+}
+
+.overview .chart tspan {
+
+  fill:#242632 !important;
+}
+.overview .chart .axis tspan  {
+
+  fill:#242632 !important;
+}
+
+.comparison {
+  padding-left: 20px;
+}
+.sidebar-header {
+  padding: 24px;
+  font-size: 14px;
+  color: #ccc;
+  text-align: center;
+  font-weight: lighter;
+}

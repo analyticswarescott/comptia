@@ -1,0 +1,96 @@
+{
+  "datasets" : [
+    {
+      "dsname" : "calendar",
+      "default_filters" : {
+        "_date": [
+          "2015-12-31T23:00:00.000Z",
+          "2017-11-30T23:00:00.000Z",
+          true
+        ]
+      },
+      "url": "/blissbi_day_Q_A_M.csv",
+      "dimensions": [
+        "Year",
+        "Month",
+        "Manager",
+        "Brand",
+        "Region",
+        "Category",
+        "Customer",
+        "Item",
+        "Division"
+      ],
+      "measures": [
+        "Gross_Sales",
+        "Gross_Margin",
+        "Netto_Sales",
+        "Quantity",
+        "Budget_Gross_Sales",
+        "Budget_Gross_Margin"
+      ],
+      "order": {
+        "Month": [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec"
+        ]
+      }
+    },
+
+    {
+      "dsname" : "fiscal",
+      "url": "/blissbi_day_Q_A_M_fiscal.csv",
+      "default_filters" : {"_date": [
+          "2015-12-31T23:00:00.000Z",
+          "2017-11-30T23:00:00.000Z",
+          true
+        ]},
+      "dimensions": [
+        "Year",
+        "Month",
+        "Manager",
+        "Brand",
+        "Region",
+        "Category",
+        "Customer",
+         "Item",
+        "Division"
+      ],
+      "measures": [
+        "Gross_Sales",
+        "Gross_Margin",
+        "Netto_Sales",
+        "Quantity",
+        "Budget_Gross_Sales",
+        "Budget_Gross_Margin"
+      ],
+      "order": {
+        "Month": [
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+          "Jan"
+        ]
+      }
+    }
+
+  ]
+}
