@@ -175,10 +175,10 @@ hideCalendarDate={true}
             docked={!loaded}
             width={260}
             open={isOpen}
-        > <div className="sidebar-header">Whytes Analytics</div>
+        > <div className="sidebar-header" style={{paddingBottom: 5}}> <img height={50} width={50}  alt="download" src="/comptia.png" /> CompTIA Sales Analysis</div>
 
-            <Subheader className="subheader">datasets</Subheader>
-            <div className="views">
+          {/*  <Subheader className="subheader">datasets</Subheader>*/}
+     {/*       <div className="views">
                 <Menu>
                     <Link   ><MenuItem  onTouchTap={ () => this.onDatasetChange('calendar')}
                         primaryText="Calendar" leftIcon={<Attachment className="icon"/>}
@@ -190,7 +190,7 @@ hideCalendarDate={true}
 
                     /></Link>
                 </Menu>
-            </div>
+            </div>*/}
 
             <Subheader className="subheader">views</Subheader>
             <div className="views">

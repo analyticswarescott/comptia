@@ -309,10 +309,11 @@ class Overview2 extends Component {
                         options={value2.options} />
                 </ToolbarGroup>
             </Toolbar>
-                <div className="charts row">
-                    foo
+                <div className="charts row" style={{height: 100}}>
+                    <div className="col-sm-9 ">
                     <Datamap
-                        height={500}
+                        responsive
+
                         data={data2}
                         fills={{
                             defaultFill: '#abdda4',
@@ -322,9 +323,38 @@ class Overview2 extends Component {
                         projection="mercator"
                         updateChoroplethOptions={{ reset: false }}
                     />
+                    </div>
 
 
                 </div>
+            <div className="charts row">
+                <div className="col-sm-4 " >
+
+                    <ChartWidget
+                        barWidth={12}
+                        data={this.props.data}
+                        filter={this.props.filter}
+                        dimension="Month"
+                        h={200}
+                        w={340}
+                    />
+                </div>
+
+                <div className="col-sm-4 ">
+
+                    <ChartWidget
+                        barWidth={12}
+                        top={12}
+                        data={this.props.data}
+                        filter={this.props.filter}
+                        dimension="Customer"
+                        h={200}
+                        w={340}
+                    />
+                </div>
+            </div>
+
+
 
             </div>
         )
