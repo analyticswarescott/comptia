@@ -175,7 +175,7 @@ hideCalendarDate={true}
             docked={!loaded}
             width={260}
             open={isOpen}
-        > <div className="sidebar-header" style={{paddingBottom: 5}}> <img height={50} width={50}  alt="download" src="/comptia.png" /> CompTIA Sales Analysis</div>
+        > <div className="sidebar-header" style={{paddingBottom: 55}}> <img height={62} width={62}  alt="download" src="/comptia.png" /> Sales Analysis</div>
 
           {/*  <Subheader className="subheader">datasets</Subheader>*/}
      {/*       <div className="views">
@@ -193,10 +193,13 @@ hideCalendarDate={true}
             </div>*/}
 
             <Subheader className="subheader">views</Subheader>
-            <div className="views">
+            <div className="views" >
                 <Menu>
-                    <Link to={{pathname: "/overview", query: query}}><MenuItem primaryText="Overview" leftIcon={<Dashboard className="icon"/>} /></Link>
-                    <Link to={{pathname: "/comparison", query: query}}><MenuItem primaryText="Comparison" leftIcon={<InsertChart className="icon"/>} /></Link>
+                    <Link to={{pathname: "/overview", query: query}}><MenuItem primaryText="Map" leftIcon={<Dashboard className="icon"/>} /></Link>
+                    <Link to={{pathname: "/comparison", query: query}}><MenuItem primaryText="Comparison" leftIcon={<InsertChart className="icon"/>}
+
+
+                    /></Link>
                     <Link to={{pathname: "/export", query: query}}><MenuItem primaryText="Export" leftIcon={<MoveToInbox className="icon"/>} /></Link>
                 </Menu>
             </div>

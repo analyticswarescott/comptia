@@ -267,6 +267,16 @@ class Overview2 extends Component {
                 CAN: { fillKey: 'test' },
             }
 
+        var data3 = {
+            USA: { fillKey: 'authorHasTraveledTo' },
+            JPN: { fillKey: 'authorHasTraveledTo' },
+            ITA: { fillKey: 'authorHasTraveledTo' },
+            CRI: { fillKey: 'authorHasTraveledTo' },
+            KOR: { fillKey: 'authorHasTraveledTo' },
+            DEU: { fillKey: 'authorHasTraveledTo' },
+            CAN: { fillKey: 'test' },
+        }
+
 
         return (
 
@@ -309,11 +319,12 @@ class Overview2 extends Component {
                         options={value2.options} />
                 </ToolbarGroup>
             </Toolbar>
-                <div className="charts row" style={{height: 100}}>
-                    <div className="col-sm-9 ">
+                <div className="charts row" >
+                    <div className="col-sm-1 " ></div>
+                    <div className="col-sm-8 ">
                     <Datamap
                         responsive
-
+                       scope="usa"
                         data={data2}
                         fills={{
                             defaultFill: '#abdda4',
@@ -343,11 +354,24 @@ class Overview2 extends Component {
                 <div className="col-sm-4 ">
 
                     <ChartWidget
-                        barWidth={12}
+                        barWidth={8}
                         top={12}
                         data={this.props.data}
                         filter={this.props.filter}
-                        dimension="Customer"
+                        dimension="Region"
+                        h={200}
+                        w={340}
+                    />
+                </div>
+
+                <div className="col-sm-4 ">
+
+                    <ChartWidget
+                        barWidth={10}
+                        top={12}
+                        data={this.props.data}
+                        filter={this.props.filter}
+                        dimension="Region"
                         h={200}
                         w={340}
                     />

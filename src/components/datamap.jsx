@@ -13,6 +13,13 @@ const propChangeRequiresMapClear = (oldProps, newProps) => {
 	);
 };
 
+ function doneDM(datamap) {
+    datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+        console.log("======" + geography.properties.name);
+    });
+}
+
+
 export default class Datamap extends React.Component {
 
 	static propTypes = {
@@ -50,6 +57,8 @@ export default class Datamap extends React.Component {
 
 	componentDidUpdate() {
 		this.drawMap();
+
+
 	}
 
 	componentWillUnmount() {
@@ -88,8 +97,13 @@ export default class Datamap extends React.Component {
 			map = this.map = new Datamaps({
 				...props,
 				data,
-				element: this.refs.container
+				element: this.refs.container,
+
 			});
+
+
+            this.map.done = doneDM(map);
+
 		} else {
 			map.updateChoropleth(data, updateChoroplethOptions);
 		}
@@ -109,6 +123,8 @@ export default class Datamap extends React.Component {
 		if (labels) {
 			map.labels();
 		}
+
+
 	}
 
 	resizeMap() {
