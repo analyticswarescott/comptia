@@ -1,5 +1,6 @@
 import React from 'react';
 import Datamaps from 'datamaps';
+import {withRouter, Link} from 'react-router'
 
 import * as d3 from 'd3'
 
@@ -13,14 +14,31 @@ const propChangeRequiresMapClear = (oldProps, newProps) => {
 	);
 };
 
- function doneDM(datamap) {
-    datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-        console.log("======" + geography.properties.name);
-    });
+
+
+
+
+
+
+class Datamap extends React.Component {
+
+
+	doneDM(datamap, ref) {
+        datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+            console.log(geography);
+
+            ref.onGeoClicky(geography);
+
+        });
+    }
+
+	onGeoClicky(geography)  {
+
+    console.log(" geo click =======>>> " + geography.properties.id)
+
+    this.props.onGeoClick(geography)
+
 }
-
-
-export default class Datamap extends React.Component {
 
 	static propTypes = {
 		arc: React.PropTypes.array,
@@ -40,6 +58,7 @@ export default class Datamap extends React.Component {
 	constructor(props) {
 		super(props);
 		this.resizeMap = this.resizeMap.bind(this);
+
 	}
 
 	componentDidMount() {
@@ -102,7 +121,7 @@ export default class Datamap extends React.Component {
 			});
 
 
-            this.map.done = doneDM(map);
+            this.map.done = this.doneDM(map, this);
 
 		} else {
 			map.updateChoropleth(data, updateChoroplethOptions);
@@ -143,3 +162,5 @@ export default class Datamap extends React.Component {
 	}
 
 }
+
+export default withRouter(Datamap)

@@ -1,17 +1,16 @@
 import React, { Component, PropTypes } from 'react'
-import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
-import Select from '../components/Select'
-import ChartWidget from '../components/ChartWidget'
-import MapWidget from '../components/MapWidget'
-
 import {groupReducer, chartReducer} from '../helpers/comparison'
 import { withRouter } from 'react-router'
-import {lightBlueA400, lightGreenA400, deepOrangeA400} from 'material-ui/styles/colors'
 
+import {getIndex} from '../helpers/comparison'
+import {addCommas, intToString} from '../helpers/comparison'
+import Chip from 'material-ui/Chip'
 
+import Datamaps from 'datamaps';
+import Datamap from '../components/datamap'
+import * as d3 from 'd3';
 
 const groupAll = 'All'
-const defaultDimension = 'Month'
 const defaultValue1 = { measure: 'Gross_Sales', group : 'Year', options: [], filter: '2016' }
 const defaultValue2 = { measure: 'Gross_Sales', group : 'Year', options: [], filter: '2017' }
 
@@ -24,22 +23,15 @@ const getOptions = (dimension) => {
     return value
 }
 
-const hasValues =() => {
-    return true
-}
 
 const axisStyle = {
-  axis: {stroke: "#242632"},
-  axisLabel: {fontSize: 16, padding: 20, fill: 'red'},
-  grid: {stroke: "#242632"},
-  ticks: {stroke: "grey"},
-  tickLabels: {fontSize: 11, padding: 5, color: '#fff'}
+    axis: {stroke: "#242632"},
+    axisLabel: {fontSize: 16, padding: 20, fill: 'red'},
+    grid: {stroke: "#242632"},
+    ticks: {stroke: "#fff"},
+    tickLabels: {fontSize: 10, padding: 5, color: '#fff', zIndex: 999}
 }
-
-
-
-
-class Overview2 extends Component {
+class MapWidget extends Component {
     constructor(props) {
         super(props)
 
@@ -47,7 +39,6 @@ class Overview2 extends Component {
         this.allGroup = null
 
         this.state = {
-            dimension : null,
             value1    : { measure: null, group: null, options: [], filter: null },
             value2    : { measure: null, group: null, options: [], filter: null },
         }
@@ -63,16 +54,13 @@ class Overview2 extends Component {
     }
 
     componentWillReceiveProps(props) {
-        const { data, params, location } = props
+        const { data, params, location, dimension, filter } = props
 
-        const dimension = (params.dimension) ? params.dimension : defaultDimension
 
-        if (dimension !== this.state.dimension) {
-            if (this.dimGroup) {
-                this.dimGroup.dispose()
-            }
-            this.dimGroup = data.dimensions[dimension].group()
+        if (this.dimGroup) {
+            this.dimGroup.dispose()
         }
+        this.dimGroup = data.dimensions[this.props.dimension].group()
 
         let { value1, value2 } = location.query
 
@@ -105,9 +93,7 @@ class Overview2 extends Component {
             ...this.state,
             value1,
             value2
-        }
-
-        )
+        })
     }
 
     onDimensionChange     = (e, i, v) => this.update({ ...this.state, dimension: v })
@@ -122,9 +108,9 @@ class Overview2 extends Component {
         const { location, router } = this.props
         const { dimension, value1, value2 } = items
 
-   //     if (dimension) {
+        if (dimension) {
             router.push({
-                pathname: '/overview/',
+                pathname: '/comparison/' + dimension,
                 query: {
                     ...location.query,
                     value1: JSON.stringify({
@@ -140,13 +126,16 @@ class Overview2 extends Component {
 
                 }
             })
-        //}
+        }
     }
 
-    onClickHandler = (e, i, v) => {
-        const filter = i.data[v].key
+    onGeoClick = (geography) => {
+
+        //const filter = i.data[v].key
+        const filter = geography.id
+
         const { filters, filterHandler } = this.props.filter
-        const { dimension }  = this.state
+        const { dimension }  = this.props
 
         if (!Array.isArray(filters[dimension] || null)) {
             filters[dimension] = []
@@ -168,11 +157,16 @@ class Overview2 extends Component {
     }
 
     render() {
-        const { data, params, filter } = this.props
-        const { dimension, value1, value2 } = this.state
- const value = (v) => v.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+        const { data, params, filter, dimension, top, horizontal, h, w, barWidth, totalOnly } = this.props
+
+        console.log(dimension);
+
+        const {  value1, value2 } = this.state;
+
+        const value = (v) => v.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
         let chartSet1 = []
         let chartSet2 = []
+
         let tableSet = []
         let totalSet = []
 
@@ -185,25 +179,26 @@ class Overview2 extends Component {
             const g2Reducer = groupReducer(null, value1, value2)
 
 
-            dimGroup1 = this.dimGroup.reduce(g1Reducer.add, g1Reducer.remove, g1Reducer.init).order(d => d.value1)
-            dimGroup2 = this.allGroup.reduce(g2Reducer.add, g2Reducer.remove, g2Reducer.init).order(d => d.value1)
+            dimGroup1 = this.dimGroup.reduce(g1Reducer.add, g1Reducer.remove, g1Reducer.init).order(d => d.value2)
+            dimGroup2 = this.allGroup.reduce(g2Reducer.add, g2Reducer.remove, g2Reducer.init).order(d => d.value2)
 
             const cReducer = chartReducer(value1.filter, value2.filter)
 
-            chartSet1 = cReducer(dimGroup1.top(16))
-            chartSet2 = dimGroup2.all().reduce((k, v) => {
-                k[0].value += +v.value.value1 || 0
-                k[1].value += +v.value.value2 || 0
-                return k
-            }, [
-                {key: (value1.filter && value1.filter !== value2.filter ? value1.filter : value1.measure), value: 0},
-                {key: (value2.filter && value2.filter !== value1.filter ? value2.filter : value2.measure), value: 0}
-            ])
+            var takeTop;
+            if (top) {takeTop = top} else {takeTop = 15;}
 
-            chartSet2[0]['label'] = value(chartSet2[0].value)
-            chartSet2[0]['fill']  =  lightBlueA400
-            chartSet2[1]['label'] = value(chartSet2[1].value)
-            chartSet2[1]['fill']  = chartSet2[0].value < chartSet2[1].value ? lightGreenA400 : (chartSet2[0].value > chartSet2[1].value) ? deepOrangeA400 : lightBlueA400
+            chartSet1 = cReducer(dimGroup1.top(takeTop))
+
+            chartSet2 = cReducer(dimGroup2.all())
+            chartSet2.sets[0][0].key = value1.filter && value1.filter !== value2.filter ? value1.filter : value1.measure;
+            chartSet2.sets[1][0].key = value2.filter && value2.filter !== value1.filter ? value2.filter : value2.measure;
+
+            chartSet2.keys.pop();
+
+            chartSet2.keys.push(value1.filter && value1.filter !== value2.filter ? value1.filter : value1.measure);
+            chartSet2.keys.push(value2.filter && value2.filter !== value1.filter ? value2.filter : value2.measure);
+
+
             chartSet1.sets = chartSet1.sets.map(s => s.map(d => {
                 if (filter.filters.hasOwnProperty(dimension)) {
                     const filters = filter.filters[dimension][0] || []
@@ -213,7 +208,10 @@ class Overview2 extends Component {
                     }}
 
                 return d
+
             }))
+
+
 
 
             tableSet = dimGroup1.top(Infinity).map(i => ({
@@ -260,19 +258,22 @@ class Overview2 extends Component {
             ...Object.keys(data.dimensions).filter(k => k.substring(0, 1) !== '_')
         ]
 
+        var tickVals = chartSet1.keys;
+        if (totalOnly) {
+            chartSet1 = chartSet2;
+            tickVals = ['Total'];
 
 
-        var data2 = {
-                USA: { fillKey: 'authorHasTraveledTo' },
-                JPN: { fillKey: 'authorHasTraveledTo' },
-                ITA: { fillKey: 'authorHasTraveledTo' },
-                CRI: { fillKey: 'authorHasTraveledTo' },
-                KOR: { fillKey: 'authorHasTraveledTo' },
-                DEU: { fillKey: 'authorHasTraveledTo' },
-                CAN: { fillKey: 'test' },
-            }
+        }
 
-/*
+
+        //
+        var numItems = chartSet1.sets[0].length
+        var barpad = 6
+        var computedWidth = numItems * (barWidth *2 + barpad) ;
+        var xoffset = 55;
+
+
         var data3 = {
             IL: { fillKey: 'authorHasTraveledTo' },
             OR: { fillKey: 'authorHasTraveledTo' },
@@ -281,88 +282,79 @@ class Overview2 extends Component {
 
 
         var c= d3.rgb("blue")
-*/
-
-        return (
 
 
-
-        <div className={"comparison"}>
-            <Toolbar className="toolbar">
-                <ToolbarGroup >
-                    <Select
-                        value={value1.measure}
-                        label={"measure"}
-                        handler={this.onValue1MeasureChange}
-                        options={data.measures} />
-                    <Select
-                        value={value1.group}
-                        label={"group"}
-                        handler={this.onValue1GroupChange}
-                        options={groupOptions} />
-                    <Select
-                        value={value1.filter}
-                        label={"value"}
-                        handler={this.onValue1FilterChange}
-                        options={value1.options} />
-                </ToolbarGroup>
-                <ToolbarGroup >
-                    <Select
-                        value={value2.measure}
-                        label={"measure"}
-                        handler={this.onValue2MeasureChange}
-                        options={data.measures} />
-                    <Select
-                        value={value2.group}
-                        label={"group"}
-                        handler={this.onValue2GroupChange}
-                        options={groupOptions} />
-                    <Select
-                        value={value2.filter}
-                        label={"value"}
-                        handler={this.onValue2FilterChange}
-                        options={value2.options} />
-                </ToolbarGroup>
-            </Toolbar>
-                <div className="charts row" >
-                    <div className="col-sm-1 " ></div>
-                    <div className="col-sm-8 ">
-
-                        <MapWidget
-                            data={this.props.data}
-                            filter={this.props.filter}
-                            dimension="State"
-                            h={200}
-                            w={440}
-                        />
-
-                    </div>
+        //map chart set format to choropleth format
 
 
-                </div>
-            <div className="charts row">
-                <div className="col-sm-6 " >
 
-                    <ChartWidget
-                        barWidth={15}
-                        data={this.props.data}
-                        filter={this.props.filter}
-                        dimension="Month"
-                        h={200}
-                        w={440}
+      /*  var data4 = chartSet1.sets[0].reduce(function(acc, cur, i) {
+
+            acc[i.key] = {fillKey: c.brighter(1).toString}
+
+        }, {});*/
+
+
+        var data4 = {};
+        chartSet1.sets[0].forEach(function(data){
+
+            var fk;
+            if (data.value === 0) {
+                fk = "defaultFill"
+            }
+            else {
+                fk = "test"
+            }
+
+            data4[data.key] = {fillKey: fk}
+        });
+
+        console.log("=========")
+        console.log(chartSet1.sets[0])
+        console.log(data4);
+
+
+
+            return (
+
+                <div>
+
+                    <Datamap
+                        onGeoClick={this.onGeoClick.bind(this)}
+                        responsive
+                        scope="usa"
+                        data={data4}
+                        fills={{
+                            defaultFill: '#abdda4',
+                            authorHasTraveledTo: '#fa0fa0',
+                            test: c.brighter(2).toString()
+                            /* test: d3color.brighter().toString*/
+                        }}
+                        projection="mercator"
+                        updateChoroplethOptions={{ reset: false }}
                     />
+
+
                 </div>
 
-            </div>
+            )
 
 
-
-            </div>
-        )
     }
+
+
 }
 
-Overview2.propTypes = {
+
+
+MapWidget.propTypes = {
+    dimension : PropTypes.string.isRequired,
+    top : PropTypes.number,
+    h : PropTypes.number,
+    w: PropTypes.number,
+    barWidth: PropTypes.number,
+    totalOnly: PropTypes.bool,
+    horizontal: PropTypes.bool,
     data : PropTypes.shape({
         dimensions: PropTypes.object.isRequired,
         measures  : PropTypes.array.isRequired
@@ -378,106 +370,4 @@ Overview2.propTypes = {
     router: PropTypes.object.isRequired
 }
 
-export default withRouter(Overview2)
-
-
-
-/*
-<div className="visual">
-    <div className="charts row">
-    <div className="col-sm-6 ">
-    <ChartWidget
-barWidth={15}
-data={this.props.data}
-filter={this.props.filter}
-dimension="Month"
-h={200}
-w={440}
-    />
-    </div>
-    <div className="col-sm-6 ">
-    <ChartWidget
-barWidth={15}
-data={this.props.data}
-filter={this.props.filter}
-dimension="Manager"
-top={10}
-h={200}
-w={420}
-    />
-    </div>
-    </div>
-
-
-    {/!*row 2*!/}
-<div className="charts row">
-
-    <div className="col-sm-6 ">
-
-        <ChartWidget
-            barWidth={15}
-            data={this.props.data}
-            filter={this.props.filter}
-            dimension="Customer"
-            top={10}
-            h={180}
-            w={560}
-        />
-    </div>
-    <div className="col-sm-6 ">
-        <ChartWidget
-            barWidth={15}
-            data={this.props.data}
-            filter={this.props.filter}
-            dimension="Division"
-            top={8}
-            h={180}
-            w={560}
-        />
-    </div>
-</div>
-
-<div className="charts row">
-    <div className="col-sm-6 ">
-    <ChartWidget
-barWidth={15}
-data={this.props.data}
-filter={this.props.filter}
-dimension="Category"
-top={12}
-h={160}
-w={420}
-    />
-    </div>
-    <div className="col-sm-6 ">
-    <ChartWidget
-barWidth={15}
-data={this.props.data}
-filter={this.props.filter}
-dimension="Brand"
-top={10}
-h={160}
-w={420}
-    />
-    </div>
-    </div>
-    {/!*Item Level*!/}
-<div className="charts row">
-    <div className="col-sm-12 ">
-        <ChartWidget
-            barWidth={14}
-            data={this.props.data}
-            filter={this.props.filter}
-            dimension="Item"
-            top={18}
-            horizontal={true}
-            h={554}
-            w={650}
-        />
-    </div>
-</div>
-
-
-
-
-</div>*/
+export default  withRouter( MapWidget)
