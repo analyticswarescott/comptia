@@ -162,9 +162,9 @@ class ChartWidget extends Component {
     }
 
     render() {
-        const { data, params, filter, dimension, top, horizontal, h, w, barWidth, totalOnly } = this.props
+        const { data, params, filter, dimension, top, horizontal, h, w, barWidth, totalOnly, yOffset } = this.props
 
-        console.log(dimension);
+        //console.log(dimension);
 
         const {  value1, value2 } = this.state;
 
@@ -287,7 +287,7 @@ class ChartWidget extends Component {
                 <div className="chart comparison" style={{width: w}}>
                     <VictoryChart
                         title={"test"}
-                        padding={{left:240, top:45, right:5}}
+                        padding={{left:yOffset, top:45, right:5}}
                         height={h}
                         width={w}
                         containerComponent={<VictoryContainer responsive={false}/>}
@@ -296,7 +296,7 @@ class ChartWidget extends Component {
                         <VictoryAxis
 
                             style={axisStyle}
-                            offsetX={240}
+                            offsetX={yOffset}
                             dependentAxis
                             tickCount={takeTop}
                             tickLabelComponent={<VictoryLabel style={{fontSize: 10, padding: 5, color: '#fff', zIndex: 999}} text={
@@ -318,7 +318,7 @@ class ChartWidget extends Component {
 
                         <VictoryGroup
                             horizontal
-                            offsetY={120}
+                            offsetY={yOffset}
                             animate={{duration: 500, delay:0}}
                             colorScale={"warm"} offset={barWidth}
                             style={{data: {width: barWidth}}}>
@@ -326,7 +326,7 @@ class ChartWidget extends Component {
                                 name={'value-1'}
                                 x={(d) => d.key}
                                 y={(d) => d.value}
-                                labelComponent={<VictoryTooltip x={240}  style={{color: '#fff'}}
+                                labelComponent={<VictoryTooltip x={yOffset}  style={{color: '#fff'}}
                                                                 flyoutStyle={{fill: '#1c1f28'}}
                                 text={
                                     function(d) {
@@ -345,7 +345,7 @@ class ChartWidget extends Component {
                                 name={'value-2'}
                                 x={(d) => d.key}
                                 y={(d) => d.value}
-                                labelComponent={<VictoryTooltip x={240}  style={{color: '#fff'}}
+                                labelComponent={<VictoryTooltip x={yOffset}  style={{color: '#fff'}}
                                                                 flyoutStyle={{fill: '#1c1f28'}}
 
                                 text={
@@ -372,14 +372,14 @@ class ChartWidget extends Component {
 
                 <div className="chart comparison" style={{width: w}}>
                     <VictoryChart
-                        padding={{top:8, bottom:29, left:31, right: 12}}
+                        padding={{top:8, bottom:60, left:31, right: 12}}
                         height={h}
                          width={computedWidth + xoffset}
                         containerComponent={<VictoryContainer responsive={false}/>}
                         theme={VictoryTheme.material}>
                         <VictoryAxis
                             style={axisStyle}
-                            tickLabelComponent={<VictoryLabel className='axis' angle={25} />}
+                            tickLabelComponent={<VictoryLabel className='axis' angle={25} textAnchor='right' />}
                             tickValues={tickVals}
                            // label={dimension}
                            // axisLabelComponent={<VictoryLabel dy={5} style={{fontSize: 11}} />}
@@ -493,6 +493,7 @@ ChartWidget.propTypes = {
     top : PropTypes.number,
     h : PropTypes.number,
     w: PropTypes.number,
+    yOffset: PropTypes.number,
     barWidth: PropTypes.number,
     totalOnly: PropTypes.bool,
     horizontal: PropTypes.bool,

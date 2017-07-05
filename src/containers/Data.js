@@ -46,17 +46,26 @@ class Data extends Component {
                     console.log(error);
                 }
 
+
+
                 if (typeof preprocessor === 'function') {
                     data = preprocessor(data)
                 }
 
+
+               // console.log(data)
+
                 const dataset = crossfilter(data)
+
                 const objects = dimensions.reduce((v, i) => {
                     v[i] = dataset.dimension(d => d[i])
                     return v
                 }, {
                     _all: dataset.dimension(d => 1),
                 })
+
+
+                //console.log(objects)
 
                 const date = dataset.dimension(d => d._date)
                 objects._date = {

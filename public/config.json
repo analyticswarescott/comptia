@@ -9,14 +9,16 @@
           true
         ]
       },
-      "url": "/test_dataset.csv",
+      "url": "/comptia_proto_dataset.csv",
       "dimensions": [
         "Year",
         "Month",
-        "Customer",
-        "Item",
+        "Day",
+        "ProductType",
+        "ProductCategory",
         "Country",
-        "State"
+        "State",
+        "SourceSystem"
       ],
       "measures": [
         "Gross_Sales"

@@ -159,7 +159,7 @@ class MapWidget extends Component {
     render() {
         const { data, params, filter, dimension, top, horizontal, h, w, barWidth, totalOnly } = this.props
 
-        console.log(dimension);
+        //console.log(dimension);
 
         const {  value1, value2 } = this.state;
 
@@ -185,7 +185,7 @@ class MapWidget extends Component {
             const cReducer = chartReducer(value1.filter, value2.filter)
 
             var takeTop;
-            if (top) {takeTop = top} else {takeTop = 15;}
+            if (top) {takeTop = top} else {takeTop = 50;}
 
             chartSet1 = cReducer(dimGroup1.top(takeTop))
 
@@ -204,9 +204,22 @@ class MapWidget extends Component {
                     const filters = filter.filters[dimension][0] || []
 
                     if (filters.length && filters.indexOf(d.key) < 0) {
-                        d.fill = '#2a2c3a'
-                    }}
+                        //d.fill = '#2a2c3a'
+                        d.fo = '#2a2c3a';
+                     /*   console.log("===== fill key for " + d.key + " TEST")
+                        d.fillKey = "test";*/
+                    }
+                    else {
+                        d.fh = 'boo'
+                    }
+                }
+                    else {
 
+                /*    console.log("===== fill key for " + d.key + " TEST2")
+                    d.fillKey = "test2"*/
+                }
+
+               // d.fillKey = "test"
                 return d
 
             }))
@@ -267,51 +280,85 @@ class MapWidget extends Component {
         }
 
 
-        //
         var numItems = chartSet1.sets[0].length
-        var barpad = 6
-        var computedWidth = numItems * (barWidth *2 + barpad) ;
-        var xoffset = 55;
 
 
-        var data3 = {
+  /*      var data3 = {
             IL: { fillKey: 'authorHasTraveledTo' },
             OR: { fillKey: 'authorHasTraveledTo' },
             NY: { fillKey: 'test' },
-        }
+        }*/
 
 
         var c= d3.rgb("blue")
 
+        //format data
 
-        //map chart set format to choropleth format
-
-
-
-      /*  var data4 = chartSet1.sets[0].reduce(function(acc, cur, i) {
-
-            acc[i.key] = {fillKey: c.brighter(1).toString}
-
-        }, {});*/
-
-
-        var data4 = {};
-        chartSet1.sets[0].forEach(function(data){
+        var dataset = {};
+   /*     chartSet1.sets[0].forEach(function(data){
 
             var fk;
             if (data.value === 0) {
                 fk = "defaultFill"
             }
             else {
-                fk = "test"
+                fk = data.fillKey
             }
 
-            data4[data.key] = {fillKey: fk}
+            data4[data.key] = {fillColor: fk}
+        });
+*/
+
+
+
+
+
+        // We need to colorize every country based on "numberOfWhatever"
+        // colors should be uniq for every value.
+        // For this purpose we create palette(using min/max series-value)
+        var onlyValues = chartSet1.sets[0].map(function(obj){ return obj.value; });
+        var minValue = Math.min.apply(null, onlyValues),
+            maxValue = Math.max.apply(null, onlyValues);
+
+
+
+        // create color palette function
+
+
+        // fill dataset in appropriate format
+        chartSet1.sets[1].forEach(function(item){ //
+            // item example value ["USA", 70]
+
+            var paletteScale = d3.scale.log()
+                .domain([minValue + 100 ,maxValue + 100])
+                // .range(["#EFEFFF","#02386F"]); // blue color
+                .range(["#ffffff",item.fill])
+                .base(2)
+
+               var value = item.value;
+
+
+
+               if (item.fo) {
+                   dataset[item.key] = { numberOfThings: value, fillColor: d3.rgb(paletteScale(value)).darker(1).toString(), borderColor: '#000000',
+                       highlightBorderWidth: 5};
+               }
+               else {
+                 if (item.fh) {
+                     dataset[item.key] = { numberOfThings: value, fillColor: item.fill, borderColor: '#DEDEDE',
+                         highlightBorderWidth: 2};
+                 }
+                 else {
+                     dataset[item.key] = {
+                         numberOfThings: value, fillColor: paletteScale(value), borderColor: '#DEDEDE',
+                         highlightBorderWidth: 2
+                     };
+                 }
+
+               }
+
         });
 
-        console.log("=========")
-        console.log(chartSet1.sets[0])
-        console.log(data4);
 
 
 
@@ -323,15 +370,21 @@ class MapWidget extends Component {
                         onGeoClick={this.onGeoClick.bind(this)}
                         responsive
                         scope="usa"
-                        data={data4}
+                        data={dataset}
                         fills={{
-                            defaultFill: '#abdda4',
+                           /* defaultFill: '#abdda4',*/
+                            defaultFill: '#ffffff',
                             authorHasTraveledTo: '#fa0fa0',
-                            test: c.brighter(2).toString()
-                            /* test: d3color.brighter().toString*/
+                            test: c.brighter(2).toString(),
+                            test2: '#fa0fa0',
                         }}
                         projection="mercator"
-                        updateChoroplethOptions={{ reset: false }}
+                        updateChoroplethOptions={{ reset: true }}
+
+
+
+
+
                     />
 
 

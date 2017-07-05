@@ -262,26 +262,6 @@ class Overview2 extends Component {
 
 
 
-        var data2 = {
-                USA: { fillKey: 'authorHasTraveledTo' },
-                JPN: { fillKey: 'authorHasTraveledTo' },
-                ITA: { fillKey: 'authorHasTraveledTo' },
-                CRI: { fillKey: 'authorHasTraveledTo' },
-                KOR: { fillKey: 'authorHasTraveledTo' },
-                DEU: { fillKey: 'authorHasTraveledTo' },
-                CAN: { fillKey: 'test' },
-            }
-
-/*
-        var data3 = {
-            IL: { fillKey: 'authorHasTraveledTo' },
-            OR: { fillKey: 'authorHasTraveledTo' },
-            NY: { fillKey: 'test' },
-        }
-
-
-        var c= d3.rgb("blue")
-*/
 
         return (
 
@@ -325,7 +305,7 @@ class Overview2 extends Component {
                 </ToolbarGroup>
             </Toolbar>
                 <div className="charts row" >
-                    <div className="col-sm-1 " ></div>
+                    {/*<div className="col-sm-1 " ></div>*/}
                     <div className="col-sm-8 ">
 
                         <MapWidget
@@ -333,23 +313,67 @@ class Overview2 extends Component {
                             filter={this.props.filter}
                             dimension="State"
                             h={200}
-                            w={440}
+                            w={200}
                         />
 
                     </div>
 
 
+
+                    <div className="col-sm-2 " >
+
+                        <ChartWidget
+                            horizontal
+                            yOffset={40}
+                            barWidth={11}
+                            data={this.props.data}
+                            filter={this.props.filter}
+                            dimension="State"
+                            top={20}
+                            h={520}
+                            w={250}
+                        />
+                    </div>
+
+
                 </div>
             <div className="charts row">
-                <div className="col-sm-6 " >
+                <div className="col-sm-4 " >
 
                     <ChartWidget
-                        barWidth={15}
+                        barWidth={14}
                         data={this.props.data}
                         filter={this.props.filter}
                         dimension="Month"
                         h={200}
+                        w={400}
+                    />
+                </div>
+
+
+                <div className="col-sm-4 " >
+
+                    <ChartWidget
+                        barWidth={12}
+                        data={this.props.data}
+                        filter={this.props.filter}
+                        dimension="ProductType"
+                        h={200}
                         w={440}
+                        top={10}
+                    />
+                </div>
+
+                <div className="col-sm-4 " >
+
+                    <ChartWidget
+                        barWidth={12}
+                        data={this.props.data}
+                        filter={this.props.filter}
+                        dimension="ProductCategory"
+                        h={200}
+                        w={440}
+                        top={10}
                     />
                 </div>
 
