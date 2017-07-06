@@ -305,7 +305,20 @@ class Overview2 extends Component {
                 </ToolbarGroup>
             </Toolbar>
                 <div className="charts row" >
-                    {/*<div className="col-sm-1 " ></div>*/}
+                    <div className="col-sm-1 " >
+
+                            <ChartWidget
+                                yOffset={65}
+                                horizontal
+                                barWidth={12}
+                                data={this.props.data}
+                                filter={this.props.filter}
+                                dimension="SourceSystem"
+                                h={100}
+                                w={200}
+                            />
+
+                    </div>
                     <div className="col-sm-8 ">
 
                         <MapWidget
@@ -325,28 +338,28 @@ class Overview2 extends Component {
                         <ChartWidget
                             horizontal
                             yOffset={40}
-                            barWidth={11}
+                            barWidth={6}
                             data={this.props.data}
                             filter={this.props.filter}
                             dimension="State"
-                            top={20}
-                            h={520}
-                            w={250}
+                            top={40}
+                            h={600}
+                            w={200}
                         />
                     </div>
 
 
                 </div>
-            <div className="charts row">
+            <div className="charts row" >
                 <div className="col-sm-4 " >
 
                     <ChartWidget
-                        barWidth={14}
+                        barWidth={12}
                         data={this.props.data}
                         filter={this.props.filter}
                         dimension="Month"
                         h={200}
-                        w={400}
+                        w={444}
                     />
                 </div>
 
@@ -358,7 +371,7 @@ class Overview2 extends Component {
                         data={this.props.data}
                         filter={this.props.filter}
                         dimension="ProductType"
-                        h={200}
+                        h={220}
                         w={440}
                         top={10}
                     />
@@ -380,6 +393,11 @@ class Overview2 extends Component {
             </div>
 
 
+            {/*bottom spacer*/}
+
+            <div className="charts row"  ><div className="col-sm-12 " />
+
+            </div>
 
             </div>
         )

@@ -192,7 +192,18 @@ class ChartWidget extends Component {
             var takeTop;
             if (top) {takeTop = top} else {takeTop = 15;}
 
-            chartSet1 = cReducer(dimGroup1.top(takeTop))
+//////////////TODO: fix this
+            //bug fix -- top must be set for Source System due to tick count issue
+            takeTop = dimension === "SourceSystem" ? 2 : takeTop;
+
+                console.log(dimGroup1)
+
+           // if (takeTop < 0) {
+          //      chartSet1 = cReducer(dimGroup1.bottom(takeTop))
+          //  }
+           // else {
+                chartSet1 = cReducer(dimGroup1.top(takeTop))
+           // }
 
             chartSet2 = cReducer(dimGroup2.all())
             chartSet2.sets[0][0].key = value1.filter && value1.filter !== value2.filter ? value1.filter : value1.measure;
@@ -287,7 +298,7 @@ class ChartWidget extends Component {
                 <div className="chart comparison" style={{width: w}}>
                     <VictoryChart
                         title={"test"}
-                        padding={{left:yOffset, top:45, right:5}}
+                        padding={{left:yOffset, top:40, right:5}}
                         height={h}
                         width={w}
                         containerComponent={<VictoryContainer responsive={false}/>}
@@ -301,13 +312,28 @@ class ChartWidget extends Component {
                             tickCount={takeTop}
                             tickLabelComponent={<VictoryLabel style={{fontSize: 10, padding: 5, color: '#fff', zIndex: 999}} text={
                                 function(d) {
-                                    return chartSet1.sets[0][d - 1].key;
+
+
+                                    //not sure why d can be a decimal --
+                                    var dd = Math.floor(d);
+
+                                    //if (dimension === "SourceSystem") {
+
+                                       // console.log(" ==========DEBUG SS")
+                                       // console.log("d ===" + d)
+                                       // console.log("dd ===" + dd)
+                                       // console.log(chartSet1.sets[0])
+                                    //}
+
+                                    console.log(chartSet1.sets[0][dd - 1].key)
+                                    return chartSet1.sets[0][dd - 1].key;
+
                                 }
                             } angle={0} /> }
                         />
                         <VictoryAxis
-                           // label={dimension}
-                           // axisLabelComponent={<VictoryLabel dy={5} style={{fontSize: 11}} />}
+                            label={dimension}
+                            axisLabelComponent={<VictoryLabel dy={-1} style={{fontSize: 11}} />}
 
                             style={axisStyle}
                             offsetY={40}
@@ -372,7 +398,7 @@ class ChartWidget extends Component {
 
                 <div className="chart comparison" style={{width: w}}>
                     <VictoryChart
-                        padding={{top:8, bottom:60, left:31, right: 12}}
+                        padding={{top:15, bottom:65, left:31, right: 12}}
                         height={h}
                          width={computedWidth + xoffset}
                         containerComponent={<VictoryContainer responsive={false}/>}
@@ -381,8 +407,8 @@ class ChartWidget extends Component {
                             style={axisStyle}
                             tickLabelComponent={<VictoryLabel className='axis' angle={25} textAnchor='right' />}
                             tickValues={tickVals}
-                           // label={dimension}
-                           // axisLabelComponent={<VictoryLabel dy={5} style={{fontSize: 11}} />}
+                            label={dimension}
+                            axisLabelComponent={<VictoryLabel dy={11} style={{fontSize: 11}} />}
                         />
 
                         <VictoryAxis
@@ -400,7 +426,7 @@ class ChartWidget extends Component {
                                 name={'value-1'}
                                 x={(d) => d.key}
                                 y={(d) => d.value}
-                                labelComponent={<VictoryTooltip dy={-30}
+                                labelComponent={<VictoryTooltip/* dy={-30}*/
                                                                 style={{color: '#fff'}}
                                                                 flyoutStyle={{fill: '1c1f28'}}/>}
                                 data={chartSet1.sets[0]}
@@ -414,7 +440,7 @@ class ChartWidget extends Component {
                                 name={'value-2'}
                                 x={(d) => d.key}
                                 y={(d) => d.value}
-                                labelComponent={<VictoryTooltip dy={-30}
+                                labelComponent={<VictoryTooltip /*dy={-30}*/
                                                                 style={{color: '#fff'}}
                                                                 flyoutStyle={{fill: '#1c1f28'}}
                                 text={
