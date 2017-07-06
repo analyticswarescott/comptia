@@ -338,11 +338,11 @@ class Overview2 extends Component {
                         <ChartWidget
                             horizontal
                             yOffset={40}
-                            barWidth={6}
+                            barWidth={5}
                             data={this.props.data}
                             filter={this.props.filter}
                             dimension="State"
-                            top={40}
+                            top={50}
                             h={600}
                             w={200}
                         />
